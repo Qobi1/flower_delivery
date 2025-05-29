@@ -1,7 +1,7 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
-from app.models import FlowerColour, Flower, FlowerType, Data
+from app.models import FlowerColour, Flower, FlowerType, ApprovedBy, OrderedBy
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer

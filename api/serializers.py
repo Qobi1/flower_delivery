@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models import Flower, FlowerColour, FlowerType, Data, ChosenFlower
+from app.models import Flower, FlowerColour, FlowerType, ApprovedBy, OrderedBy, ChosenFlower
 
 
 class FlowerSerializer(serializers.ModelSerializer):
@@ -55,7 +55,7 @@ class DataSerializer(serializers.ModelSerializer):
     chosen_flowers = ChosenFlowerSerializer(many=True, write_only=True)
 
     class Meta:
-        model = Data
+        model = ApprovedBy
         fields = '__all__'
         write_only_fields = ['message']
 
@@ -103,7 +103,7 @@ class DataSerializer(serializers.ModelSerializer):
         flower_colour = validated_data.pop('flower_colour', [])
 
         # Create Data instance
-        data_instance = Data.objects.create(**validated_data)
+        data_instance = ApprovedBy.objects.create(**validated_data)
         data_instance.flower_type.set(flower_type)
         data_instance.flower_colour.set(flower_colour)
 
