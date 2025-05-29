@@ -55,7 +55,7 @@ class DataSerializer(serializers.ModelSerializer):
     chosen_flowers = ChosenFlowerSerializer(many=True, write_only=True)
 
     class Meta:
-        model = ApprovedBy
+        model = OrderedBy
         fields = '__all__'
         write_only_fields = ['message']
 
@@ -103,7 +103,7 @@ class DataSerializer(serializers.ModelSerializer):
         flower_colour = validated_data.pop('flower_colour', [])
 
         # Create Data instance
-        data_instance = ApprovedBy.objects.create(**validated_data)
+        data_instance = OrderedBy.objects.create(**validated_data)
         data_instance.flower_type.set(flower_type)
         data_instance.flower_colour.set(flower_colour)
 
