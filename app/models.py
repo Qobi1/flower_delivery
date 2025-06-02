@@ -39,20 +39,20 @@ class Flower(models.Model):
 
 
 class OrderedBy(models.Model):
-    name = models.CharField(max_length=512)
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    name = models.CharField(max_length=512, verbose_name="Имя")
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name="UUID")
     flower_type = models.ManyToManyField(FlowerType, related_name='chosen_flower_types')
     flower_colour = models.ManyToManyField(FlowerColour, related_name='chosen_flower_colour')
-    city = models.CharField(max_length=512)
-    street = models.CharField(max_length=512)
-    building = models.CharField(max_length=512)
+    city = models.CharField(max_length=512, verbose_name="Город")
+    street = models.CharField(max_length=512, verbose_name="Улица")
+    building = models.CharField(max_length=512, verbose_name="Здание")
     corpus = models.CharField(max_length=512)
-    flat = models.CharField(max_length=512)
-    phone_number = models.CharField(max_length=512)
+    flat = models.CharField(max_length=512, verbose_name="Квартира")
+    phone_number = models.CharField(max_length=512, verbose_name="Номер телефона")
     message = models.TextField()
-    time = models.CharField(max_length=128)
-    is_anonymous = models.BooleanField(default=False)
-    visits = models.PositiveIntegerField(default=0)
+    time = models.CharField(max_length=128, verbose_name="Время")
+    is_anonymous = models.BooleanField(default=False, verbose_name="Анонимный")
+    visits = models.PositiveIntegerField(default=0, verbose_name="Посещения")
 
     class Meta:
         verbose_name = "Заказчик"
@@ -79,7 +79,7 @@ class ApprovedBy(models.Model):
         verbose_name_plural = "Утвердившие"
 
     def __str__(self):
-        return f"{self.uuid} ({str(self.id)})"
+        return f"({str(self.id)})"
 
 
 class ChosenFlower(models.Model):
