@@ -92,7 +92,7 @@ class DataCreateRetrieveListAPIView(APIView):
         tags=['Data'],
     )
     def get(self, request):
-        queryset = Data.objects.all()
+        queryset = OrderedBy.objects.all()
         serializer = self.serializer_class(queryset, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -106,4 +106,4 @@ class DataCreateRetrieveListAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -86,6 +86,10 @@ class DataSerializer(serializers.ModelSerializer):
             for i in all_types
         ]
 
+        representation['chosen_flowers'] = ChosenFlowerSerializer(
+            ChosenFlower.objects.filter(data=instance), many=True, context={'request': request}
+        ).data
+
         if representation.get('is_anonymous') is True:
             representation['city'] = None
             representation['street'] = None
@@ -110,6 +114,6 @@ class DataSerializer(serializers.ModelSerializer):
         # Create related ChosenFlower instances
         for flower_data in chosen_flowers_data:
             ChosenFlower.objects.create(data=data_instance, **flower_data)
-
         return data_instance
+
 
