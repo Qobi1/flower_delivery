@@ -1,6 +1,8 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
+from rest_framework.generics import get_object_or_404
+
 from app.models import FlowerColour, Flower, FlowerType, ApprovedBy, OrderedBy
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
@@ -107,3 +109,20 @@ class DataCreateRetrieveListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class DataRetrieveOneAPIView(APIView):
+    renderer_classes = [JSONRenderer]
+    parser_classes = [JSONParser]
+    serializer_class = DataSerializer
+
+    @extend_schema(
+        request=serializer_class,
+        responses={201: serializer_class, 200: serializer_class},
+        tags=['Data'],
+    )
+    def get(self, request, uuid):
+        queryset = get_object_or_404(OrderedBy, uuid=uuid)
+        serializer = self.serializer_class(queryset, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
