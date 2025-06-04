@@ -93,6 +93,7 @@ class DataCreateRetrieveListAPIView(APIView):
         request=serializer_class,
         responses={201: serializer_class, 200: serializer_class},
         tags=['Data'],
+        operation_id='data_list'
     )
     def get(self, request):
         queryset = OrderedBy.objects.all()
@@ -141,11 +142,11 @@ class DataRetrieveOneAPIView(APIView):
         # increase number of visits to 1
         instance.visits += 1
         instance.save()
-
-        password = request.query_params.get('password', False)
+        password_given = False
+        password = request.query_params.get('password', None)
         if password == '9f93d3':
-            password = True
-        serializer = self.serializer_class(instance, context={'request': request, 'password': password})
+            password_given = True
+        serializer = self.serializer_class(instance, context={'request': request, 'password': password_given})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

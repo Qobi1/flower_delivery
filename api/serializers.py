@@ -92,7 +92,7 @@ class DataSerializer(serializers.ModelSerializer):
         representation['chosen_flowers'] = ChosenFlowerSerializer(
             ChosenFlower.objects.filter(data=instance), many=True, context={'request': request}
         ).data
-
+        print(password)
         if representation.get('is_anonymous') is True and password is False:
             representation['city'] = None
             representation['street'] = None
