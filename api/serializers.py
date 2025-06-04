@@ -62,6 +62,7 @@ class DataSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         request = self.context['request']
         representation = super().to_representation(instance)
+        password = self.context['password']
 
         selected_colors = list(instance.flower_colour.values_list('id', flat=True))
         all_colours = FlowerColour.objects.all()
@@ -70,6 +71,7 @@ class DataSerializer(serializers.ModelSerializer):
             {
                 'id': i.id,
                 'name': i.name,
+                'image': request.build_absolute_uri(i.image.url),
                 'selected': i.id in selected_colors
             }
             for i in all_colours
@@ -81,6 +83,7 @@ class DataSerializer(serializers.ModelSerializer):
             {
                 'id': i.id,
                 'name': i.name,
+                'image': request.build_absolute_uri(i.image.url),
                 'selected': i.id in selected_types
             }
             for i in all_types
@@ -90,7 +93,8 @@ class DataSerializer(serializers.ModelSerializer):
             ChosenFlower.objects.filter(data=instance), many=True, context={'request': request}
         ).data
 
-        if representation.get('is_anonymous') is True:
+        print(password)
+        if representation.get('is_anonymous') is True and password is False:
             representation['city'] = None
             representation['street'] = None
             representation['building'] = None
@@ -116,4 +120,9 @@ class DataSerializer(serializers.ModelSerializer):
             ChosenFlower.objects.create(data=data_instance, **flower_data)
         return data_instance
 
+
+class ApprovedBySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApprovedBy
+        fields = '__all__'
 

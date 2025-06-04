@@ -7,7 +7,8 @@ from app.models import FlowerColour, Flower, FlowerType, ApprovedBy, OrderedBy
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
-from .serializers import FlowerSerializer, FlowerColourSerializer, FlowerTypeSerializer, DataSerializer, ChosenFlowerSerializer
+from .serializers import FlowerSerializer, FlowerColourSerializer, FlowerTypeSerializer, DataSerializer, \
+    ChosenFlowerSerializer, ApprovedBySerializer
 from rest_framework.response import Response
 from .utils import parse_list_param
 
@@ -121,8 +122,46 @@ class DataRetrieveOneAPIView(APIView):
         request=serializer_class,
         responses={201: serializer_class, 200: serializer_class},
         tags=['Data'],
+        parameters=[
+            OpenApiParameter(
+                name='password',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description='password'
+            )
+        ]
     )
     def get(self, request, uuid):
-        queryset = get_object_or_404(OrderedBy, uuid=uuid)
-        serializer = self.serializer_class(queryset, context={'request': request})
+        try:
+            instance = OrderedBy.objects.get(uuid=uuid)
+        except OrderedBy.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # increase number of visits to 1
+        instance.visits += 1
+        instance.save()
+
+        password = request.query_params.get('password', False)
+        if password == '9f93d3':
+            password = True
+        serializer = self.serializer_class(instance, context={'request': request, 'password': password})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ApprovalCreateAPIView(APIView):
+    renderer_classes = [JSONRenderer]
+    parser_classes = [JSONParser]
+    serializer_class = ApprovedBySerializer
+
+    @extend_schema(
+        request=serializer_class,
+        responses={201: serializer_class, 200: serializer_class},
+        tags=['Data'],
+    )
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
