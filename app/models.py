@@ -64,14 +64,14 @@ class OrderedBy(models.Model):
 
 
 class ApprovedBy(models.Model):
-    city = models.CharField(max_length=512, verbose_name="Город")
-    street = models.CharField(max_length=512, verbose_name="Улица")
-    building = models.CharField(max_length=512, verbose_name="Здание")
-    corpus = models.CharField(verbose_name="Корпус")
-    flat = models.CharField(verbose_name="Квартира")
-    phone_number = models.CharField(verbose_name="Номер телефона заказчика")
-    message = models.TextField(verbose_name='Сообщение')
-    time = models.CharField(max_length=128, verbose_name="Время")
+    city = models.CharField(max_length=512, verbose_name="Город", null=True)
+    street = models.CharField(max_length=512, verbose_name="Улица", null=True)
+    building = models.CharField(max_length=512, verbose_name="Здание", null=True)
+    corpus = models.CharField(verbose_name="Корпус", null=True)
+    flat = models.CharField(verbose_name="Квартира", null=True)
+    phone_number = models.CharField(verbose_name="Номер телефона заказчика", null=True)
+    message = models.TextField(verbose_name='Сообщение', null=True)
+    time = models.CharField(max_length=128, verbose_name="Время", null=True)
     is_address_typed = models.BooleanField(default=False, verbose_name='Адрес написан?')
     uuid = models.UUIDField(verbose_name='UUID')
     buyer_phone = models.CharField(verbose_name="Номер телефона покупателя", null=True)

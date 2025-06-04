@@ -44,7 +44,6 @@ class ChosenFlowerSerializer(serializers.ModelSerializer):
         return representation
 
 
-
 class DataSerializer(serializers.ModelSerializer):
     flower_type = serializers.PrimaryKeyRelatedField(
         queryset=FlowerType.objects.all(), many=True
@@ -123,4 +122,16 @@ class ApprovedBySerializer(serializers.ModelSerializer):
     class Meta:
         model = ApprovedBy
         fields = '__all__'
+
+    def validate(self, attrs):
+        uuid = attrs['uuid']
+        order = OrderedBy.objects.filter(uuid=uuid).first()
+        attrs['city'] = order.city
+        attrs['street'] = order.street
+        attrs['building'] = order.building
+        attrs['corpus'] = order.corpus
+        attrs['flat'] = order.flat
+        attrs['message'] = order.message
+        attrs['time'] = order.time
+        return attrs
 
