@@ -69,11 +69,12 @@ class ApprovedBy(models.Model):
     building = models.CharField(max_length=512, verbose_name="Здание")
     corpus = models.CharField(verbose_name="Корпус")
     flat = models.CharField(verbose_name="Квартира")
-    phone_number = models.CharField(verbose_name="Номер телефона")
+    phone_number = models.CharField(verbose_name="Номер телефона заказчика")
     message = models.TextField(verbose_name='Сообщение')
     time = models.CharField(max_length=128, verbose_name="Время")
     is_address_typed = models.BooleanField(default=False, verbose_name='Адрес написан?')
     uuid = models.UUIDField(verbose_name='UUID')
+    buyer_phone = models.CharField(verbose_name="Номер телефона покупателя", null=True)
 
     class Meta:
         verbose_name = "Утвердивший"

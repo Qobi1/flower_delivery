@@ -138,7 +138,7 @@ class ApprovedByAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('uuid', 'city', 'street', 'building', 'corpus', 'flat',
-                       'phone_number', 'message', 'time', 'is_address_typed')
+                       'phone_number', 'message', 'time', 'is_address_typed', 'buyer_phone')
         }),
     )
 
