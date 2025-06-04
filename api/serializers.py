@@ -62,7 +62,7 @@ class DataSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         request = self.context['request']
         representation = super().to_representation(instance)
-        password = self.context['password']
+        password = self.context.get('password', False)
 
         selected_colors = list(instance.flower_colour.values_list('id', flat=True))
         all_colours = FlowerColour.objects.all()
@@ -93,7 +93,6 @@ class DataSerializer(serializers.ModelSerializer):
             ChosenFlower.objects.filter(data=instance), many=True, context={'request': request}
         ).data
 
-        print(password)
         if representation.get('is_anonymous') is True and password is False:
             representation['city'] = None
             representation['street'] = None

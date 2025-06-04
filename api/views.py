@@ -157,7 +157,7 @@ class ApprovalCreateAPIView(APIView):
     @extend_schema(
         request=serializer_class,
         responses={201: serializer_class, 200: serializer_class},
-        tags=['Data'],
+        tags=['Approved Data'],
     )
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'request': request})

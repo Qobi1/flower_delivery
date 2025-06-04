@@ -35,39 +35,6 @@ class FlowerAdmin(admin.ModelAdmin):
         return obj.colour
 
 
-@admin.register(OrderedBy)
-class OrderedByAdmin(admin.ModelAdmin):
-    list_display = (
-        "id", "uuid", "name", "city", "phone_number", "time", "is_anonymous",
-        "visits", "approved_count", 'chosen_flowers_display'
-    )
-    readonly_fields = ("approved_count", "chosen_flower_images_with_text")
-    search_fields = ("name", "phone_number", "uuid")
-    list_filter = ("is_anonymous", "city", "flower_type", "flower_colour")
-
-    def approved_count(self, obj):
-        return ApprovedBy.objects.filter(order=obj).count()
-    approved_count.short_description = "Количество подтверждений"
-
-    def chosen_flowers_display(self, obj):
-        return ", ".join([str(f.flower.id) for f in obj.chosen_flowers.all() if f.flower])
-
-    chosen_flowers_display.short_description = "Выбранные цветы"
-
-    def chosen_flower_images_with_text(self, obj):
-        blocks = []
-        for chosen in obj.chosen_flowers.select_related('flower'):
-            if chosen.flower and chosen.flower.image:
-                img_html = f'<img src="{chosen.flower.image.url}" style="height:100px; margin-right:10px;" />'
-                text_html = f'<span style="vertical-align:top; font-weight:bold;">{chosen.text}</span>'
-                block = f'<div style="margin-bottom:15px; display:flex; align-items:center;">{img_html}{text_html}</div>'
-                blocks.append(block)
-        if blocks:
-            return mark_safe("".join(blocks))
-        return "Нет выбранных цветов"
-    chosen_flower_images_with_text.short_description = "Изображения выбранных цветов"
-
-
 @admin.register(FlowerType)
 class FlowerTypeAdmin(admin.ModelAdmin):
     list_display = ("id", "display_image", "display_name")
@@ -125,19 +92,52 @@ class FlowerColourAdmin(admin.ModelAdmin):
         return obj.name
 
 
+
+@admin.register(OrderedBy)
+class OrderedByAdmin(admin.ModelAdmin):
+    list_display = (
+        "id", "uuid", "name", "city", "phone_number", "time", "is_anonymous",
+        "visits", "approved_count", 'chosen_flowers_display'
+    )
+    readonly_fields = ('uuid', "approved_count", "chosen_flower_images_with_text")
+    search_fields = ("name", "phone_number", "uuid")
+    list_filter = ("is_anonymous", )
+
+    def approved_count(self, obj):
+        return ApprovedBy.objects.filter(uuid=obj.uuid).count()
+    approved_count.short_description = "Количество подтверждений"
+
+    def chosen_flowers_display(self, obj):
+        return ", ".join([str(f.flower.id) for f in obj.chosen_flowers.all() if f.flower])
+
+    chosen_flowers_display.short_description = "Выбранные цветы"
+
+    def chosen_flower_images_with_text(self, obj):
+        blocks = []
+        for chosen in obj.chosen_flowers.select_related('flower'):
+            if chosen.flower and chosen.flower.image:
+                img_html = f'<img src="{chosen.flower.image.url}" style="height:100px; margin-right:10px;" />'
+                text_html = f'<span style="vertical-align:top; font-weight:bold;">{chosen.text}</span>'
+                block = f'<div style="margin-bottom:15px; display:flex; align-items:center;">{img_html}{text_html}</div>'
+                blocks.append(block)
+        if blocks:
+            return mark_safe("".join(blocks))
+        return "Нет выбранных цветов"
+    chosen_flower_images_with_text.short_description = "Изображения выбранных цветов"
+
+
 @admin.register(ApprovedBy)
 class ApprovedByAdmin(admin.ModelAdmin):
     list_display = (
-        'get_id', 'get_order', 'get_city', 'get_street','get_phone_number', 'get_time', 'get_is_address_typed'
+        'get_id', 'get_city', 'get_street','get_phone_number', 'get_time', 'get_is_address_typed', 'get_uuid'
     )
-    list_filter = ('is_address_typed', 'city')
-    search_fields = ('phone_number', )
+    search_fields = ('phone_number', 'uuid')
     readonly_fields = ('id',)
     ordering = ('-id',)
 
     fieldsets = (
         (None, {
-            'fields': ('order', 'city', 'street', 'building', 'corpus', 'flat',
+            'fields': ('uuid', 'city', 'street', 'building', 'corpus', 'flat',
                        'phone_number', 'message', 'time', 'is_address_typed')
         }),
     )
@@ -147,8 +147,11 @@ class ApprovedByAdmin(admin.ModelAdmin):
         return obj.id
 
     @admin.display(description='Заказ')
-    def get_order(self, obj):
-        return obj.order
+    def get_uuid(self, obj):
+        order = OrderedBy.objects.filter(uuid=obj.uuid).first()
+        if order:
+            return order.uuid
+        return None
 
     @admin.display(description='Город')
     def get_city(self, obj):

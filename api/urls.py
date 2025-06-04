@@ -1,5 +1,6 @@
 from rest_framework.urls import path
-from .views import FlowerRetrieveListAPIView, FlowerColourRetrieveAPIView, FlowerTypeRetrieveList, DataCreateRetrieveListAPIView, DataRetrieveOneAPIView
+from .views import FlowerRetrieveListAPIView, FlowerColourRetrieveAPIView, FlowerTypeRetrieveList, \
+    DataCreateRetrieveListAPIView, DataRetrieveOneAPIView, ApprovalCreateAPIView
 
 urlpatterns = [
     path('flower-colour/', FlowerColourRetrieveAPIView.as_view(), name='api_flower_colour'),
@@ -7,4 +8,5 @@ urlpatterns = [
     path('flower/', FlowerRetrieveListAPIView.as_view(), name='api_flowers'),
     path('saved-data/', DataCreateRetrieveListAPIView.as_view(), name='api_saved_data'),
     path('saved-data/<str:uuid>/', DataRetrieveOneAPIView.as_view(), name='api_get_saved_data'),
+    path('approved-data/', ApprovalCreateAPIView.as_view(), name='api_get_saved_data'),
 ]

@@ -53,7 +53,7 @@ class OrderedBy(models.Model):
     time = models.CharField(max_length=128, verbose_name="Время", null=True, blank=True)
     is_anonymous = models.BooleanField(default=False, verbose_name="Анонимный", null=True, blank=True)
     visits = models.PositiveIntegerField(default=0, verbose_name="Посещения", null=True, blank=True)
-    address_mentioned = models.BooleanField(default=True)
+    address_mentioned = models.BooleanField(default=True, verbose_name='Адрес написан?')
 
     class Meta:
         verbose_name = "Заказчик"
@@ -64,16 +64,16 @@ class OrderedBy(models.Model):
 
 
 class ApprovedBy(models.Model):
-    order = models.ForeignKey(OrderedBy, on_delete=models.SET_NULL, null=True)
-    city = models.CharField(max_length=512)
-    street = models.CharField(max_length=512)
-    building = models.CharField(max_length=512)
-    corpus = models.CharField()
-    flat = models.CharField()
-    phone_number = models.CharField()
-    message = models.TextField()
-    time = models.CharField(max_length=128)
-    is_address_typed = models.BooleanField(default=False)
+    city = models.CharField(max_length=512, verbose_name="Город")
+    street = models.CharField(max_length=512, verbose_name="Улица")
+    building = models.CharField(max_length=512, verbose_name="Здание")
+    corpus = models.CharField(verbose_name="Корпус")
+    flat = models.CharField(verbose_name="Квартира")
+    phone_number = models.CharField(verbose_name="Номер телефона")
+    message = models.TextField(verbose_name='Сообщение')
+    time = models.CharField(max_length=128, verbose_name="Время")
+    is_address_typed = models.BooleanField(default=False, verbose_name='Адрес написан?')
+    uuid = models.UUIDField(verbose_name='UUID')
 
     class Meta:
         verbose_name = "Утвердивший"
