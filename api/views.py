@@ -146,9 +146,11 @@ class DataRetrieveOneAPIView(APIView):
         password = request.query_params.get('password', None)
         if password == '9f93d3':
             password_given = True
+        if password and password != '9f93d3':
+            return Response({"error_message": "Incorrect password"}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = self.serializer_class(instance, context={'request': request, 'password': password_given})
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class ApprovalCreateAPIView(APIView):
     renderer_classes = [JSONRenderer]
