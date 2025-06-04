@@ -125,13 +125,17 @@ class ApprovedBySerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         uuid = attrs['uuid']
-        order = OrderedBy.objects.filter(uuid=uuid).first()
-        attrs['city'] = order.city
-        attrs['street'] = order.street
-        attrs['building'] = order.building
-        attrs['corpus'] = order.corpus
-        attrs['flat'] = order.flat
-        attrs['message'] = order.message
-        attrs['time'] = order.time
+        is_address_typed = attrs['is_address_typed']
+
+        if is_address_typed is False:
+            order = OrderedBy.objects.filter(uuid=uuid).first()
+            if order:
+                attrs['city'] = order.city if order.city else None
+                attrs['street'] = order.street if order.street else None
+                attrs['building'] = order.building if order.building else None
+                attrs['corpus'] = order.corpus if order.corpus else None
+                attrs['flat'] = order.flat if order.flat else None
+                attrs['message'] = order.message if order.message else None
+                attrs['time'] = order.time if order.time else None
         return attrs
 
