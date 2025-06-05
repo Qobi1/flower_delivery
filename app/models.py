@@ -70,7 +70,7 @@ class ApprovedBy(models.Model):
     corpus = models.CharField(verbose_name="Корпус", null=True)
     flat = models.CharField(verbose_name="Квартира", null=True)
     phone_number = models.CharField(verbose_name="Номер телефона заказчика", null=True)
-    message = models.TextField(verbose_name='Сообщение', null=True)
+    message = models.TextField(verbose_name='Сообщение', null=True, blank=True)
     time = models.CharField(max_length=128, verbose_name="Время", null=True)
     is_address_typed = models.BooleanField(default=False, verbose_name='Адрес написан?')
     uuid = models.UUIDField(verbose_name='UUID')
