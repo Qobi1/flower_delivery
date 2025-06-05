@@ -3,12 +3,12 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 
-from app.models import FlowerColour, Flower, FlowerType, ApprovedBy, OrderedBy
+from app.models import FlowerColour, Flower, FlowerType, ApprovedBy, OrderedBy, GenerateUniqueLink
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from .serializers import FlowerSerializer, FlowerColourSerializer, FlowerTypeSerializer, DataSerializer, \
-    ChosenFlowerSerializer, ApprovedBySerializer
+    ChosenFlowerSerializer, ApprovedBySerializer, GenerateUniqueLinkSerializer
 from rest_framework.response import Response
 from .utils import parse_list_param
 
@@ -168,3 +168,33 @@ class ApprovalCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class GenerateUniqueLinkRetrieveAPIView(APIView):
+    renderer_classes = [JSONRenderer]
+    parser_classes = [JSONParser]
+    serializer_class = GenerateUniqueLinkSerializer
+
+    @extend_schema(
+        request=serializer_class,
+        responses={201: serializer_class, 200: serializer_class},
+        tags=['Unique link'],
+        parameters=[
+            OpenApiParameter(
+                name='link',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                description='link'
+            )
+        ]
+    )
+    def get(self, request):
+        link = request.query_params.get('link', None)
+        instance = GenerateUniqueLink.objects.filter(link=link).first()
+        instance.total_visit += 1
+        instance.save()
+        return Response({"Response": "Success"}, status=status.HTTP_200_OK)
+
+

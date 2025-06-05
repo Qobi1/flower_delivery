@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models import Flower, FlowerColour, FlowerType, ApprovedBy, OrderedBy, ChosenFlower
+from app.models import Flower, FlowerColour, FlowerType, ApprovedBy, OrderedBy, ChosenFlower, GenerateUniqueLink
 
 
 class FlowerSerializer(serializers.ModelSerializer):
@@ -138,4 +138,10 @@ class ApprovedBySerializer(serializers.ModelSerializer):
                 attrs['message'] = order.message if order.message else None
                 attrs['time'] = order.time if order.time else None
         return attrs
+
+
+class GenerateUniqueLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GenerateUniqueLink
+        fields = '__all__'
 

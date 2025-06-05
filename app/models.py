@@ -102,3 +102,15 @@ class ChosenFlower(models.Model):
 
     def __str__(self):
         return f"{self.id} - Flower ID{self.flower.id}"
+
+class GenerateUniqueLink(models.Model):
+    link = models.CharField(max_length=128, unique=True)
+    total_visit = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Уникальная ссылка"
+        verbose_name_plural = "Уникальная ссылка"
+
+    def __str__(self):
+        return f"{self.link} - {self.total_visit}"
+

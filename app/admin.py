@@ -187,4 +187,12 @@ class ApprovedByAdmin(admin.ModelAdmin):
 
 
 
+@admin.register(GenerateUniqueLink)
+class GenerateUniqueLinkAdmin(admin.ModelAdmin):
+    readonly_fields = ('total_visit',)
+    list_display = ('formatted_link', 'total_visit')
+
+    def formatted_link(self, obj):
+        return f"https://lovnamek.ru/?url={obj.link}"
+    formatted_link.short_description = 'Link'
 
